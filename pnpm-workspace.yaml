@@ -1,2 +1,6 @@
 packages:
-  - packages
+  - modules
+
+
+onlyBuiltDependencies:
+  - '@shopify/react-native-skia'
