@@ -1,0 +1,13 @@
+{
+  "$schema": "https://nitro.margelo.com/nitro.schema.json",
+  "cxxNamespace": ["nitrop2p"],
+  "ios": {
+    "iosModuleName": "NitroP2p"
+  },
+  "android": {
+    "androidNamespace": ["nitrop2p"],
+    "androidCxxLibName": "NitroP2p"
+  },
+  "autolinking": {},
+  "ignorePaths": ["**/node_modules"]
+}

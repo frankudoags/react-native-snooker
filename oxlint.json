@@ -1,0 +1,31 @@
+{
+  "categories": {
+    "correctness": "warn",
+    "suspicious": "warn",
+    "perf": "warn",
+    "style": "warn",
+    "restriction": "warn",
+    "nursery": "off"
+  },
+  "include": ["**/*.{js,jsx,ts,tsx}"],
+  "exclude": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/.expo/**",
+    "**/.expo*/**",
+    "**/.pnpm-store/**",
+    "**/expo-env.d.ts",
+    "**/build-*.ipa",
+    "**/build-*.aab",
+    "**/android/build/**",
+    "**/ios/build/**"
+  ],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unused-vars": "warn",
+    "react-hooks/exhaustive-deps": "off",
+    "react/no-unescaped-entities": "off",
+    "import/no-named-as-default": "off",
+    "eqeqeq": "off"
+  }
+}

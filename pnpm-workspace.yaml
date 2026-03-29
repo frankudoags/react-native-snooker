@@ -1,6 +1,5 @@
 packages:
-  - modules
-
+  - modules/nitro-p2p
 
 onlyBuiltDependencies:
   - '@shopify/react-native-skia'
