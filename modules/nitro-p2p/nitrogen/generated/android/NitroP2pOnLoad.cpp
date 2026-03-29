@@ -16,6 +16,7 @@
 #include <NitroModules/HybridObjectRegistry.hpp>
 
 #include "JHybridP2PSpec.hpp"
+#include "JFunc_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_.hpp"
 #include "JHybridP2pSpec.hpp"
 #include <NitroModules/DefaultConstructableObject.hpp>
 
@@ -42,6 +43,7 @@ void registerAllNatives() {
 
   // Register native JNI methods
   margelo::nitro::nitrop2p::JHybridP2PSpec::CxxPart::registerNatives();
+  margelo::nitro::nitrop2p::JFunc_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent__cxx::registerNatives();
 
   // Register Nitro Hybrid Objects
   HybridObjectRegistry::registerHybridObjectConstructor(

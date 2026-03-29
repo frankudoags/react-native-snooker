@@ -14,11 +14,37 @@ namespace NitroP2p { class HybridP2PSpec_cxx; }
 
 // Forward declaration of `P2PPeer` to properly resolve imports.
 namespace margelo::nitro::nitrop2p { struct P2PPeer; }
+// Forward declaration of `P2PPeerDiscovered` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PPeerDiscovered; }
+// Forward declaration of `P2PPeerLost` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PPeerLost; }
+// Forward declaration of `P2PPeerConnected` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PPeerConnected; }
+// Forward declaration of `P2PPeerDisconnected` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PPeerDisconnected; }
+// Forward declaration of `P2PMessageReceived` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PMessageReceived; }
+// Forward declaration of `P2PErrorEvent` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PErrorEvent; }
+// Forward declaration of `P2PEventType` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { enum class P2PEventType; }
+// Forward declaration of `P2PMessage` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PMessage; }
 
 #include <string>
 #include <optional>
 #include "P2PPeer.hpp"
 #include <vector>
+#include "P2PPeerDiscovered.hpp"
+#include "P2PPeerLost.hpp"
+#include "P2PPeerConnected.hpp"
+#include "P2PPeerDisconnected.hpp"
+#include "P2PMessageReceived.hpp"
+#include "P2PErrorEvent.hpp"
+#include <variant>
+#include <functional>
+#include "P2PEventType.hpp"
+#include "P2PMessage.hpp"
 
 #include "NitroP2p-Swift-Cxx-Umbrella.hpp"
 
@@ -127,6 +153,20 @@ namespace margelo::nitro::nitrop2p {
       }
       auto __value = std::move(__result.value());
       return __value;
+    }
+    inline double subscribe(const std::function<void(const std::variant<P2PPeerDiscovered, P2PPeerLost, P2PPeerConnected, P2PPeerDisconnected, P2PMessageReceived, P2PErrorEvent>& /* event */)>& callback) override {
+      auto __result = _swiftPart.subscribe(callback);
+      if (__result.hasError()) [[unlikely]] {
+        std::rethrow_exception(__result.error());
+      }
+      auto __value = std::move(__result.value());
+      return __value;
+    }
+    inline void unsubscribe(double id) override {
+      auto __result = _swiftPart.unsubscribe(std::forward<decltype(id)>(id));
+      if (__result.hasError()) [[unlikely]] {
+        std::rethrow_exception(__result.error());
+      }
     }
 
   private:

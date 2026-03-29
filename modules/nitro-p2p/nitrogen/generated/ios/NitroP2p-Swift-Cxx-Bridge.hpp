@@ -10,6 +10,22 @@
 // Forward declarations of C++ defined types
 // Forward declaration of `HybridP2PSpec` to properly resolve imports.
 namespace margelo::nitro::nitrop2p { class HybridP2PSpec; }
+// Forward declaration of `P2PErrorEvent` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PErrorEvent; }
+// Forward declaration of `P2PEventType` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { enum class P2PEventType; }
+// Forward declaration of `P2PMessageReceived` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PMessageReceived; }
+// Forward declaration of `P2PMessage` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PMessage; }
+// Forward declaration of `P2PPeerConnected` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PPeerConnected; }
+// Forward declaration of `P2PPeerDisconnected` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PPeerDisconnected; }
+// Forward declaration of `P2PPeerDiscovered` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PPeerDiscovered; }
+// Forward declaration of `P2PPeerLost` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PPeerLost; }
 // Forward declaration of `P2PPeer` to properly resolve imports.
 namespace margelo::nitro::nitrop2p { struct P2PPeer; }
 
@@ -19,12 +35,22 @@ namespace NitroP2p { class HybridP2PSpec_cxx; }
 
 // Include C++ defined types
 #include "HybridP2PSpec.hpp"
+#include "P2PErrorEvent.hpp"
+#include "P2PEventType.hpp"
+#include "P2PMessage.hpp"
+#include "P2PMessageReceived.hpp"
 #include "P2PPeer.hpp"
+#include "P2PPeerConnected.hpp"
+#include "P2PPeerDisconnected.hpp"
+#include "P2PPeerDiscovered.hpp"
+#include "P2PPeerLost.hpp"
 #include <NitroModules/Result.hpp>
 #include <exception>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <string>
+#include <variant>
 #include <vector>
 
 /**
@@ -59,6 +85,81 @@ namespace margelo::nitro::nitrop2p::bridge::swift {
     return vector;
   }
   
+  // pragma MARK: std::variant<P2PPeerDiscovered, P2PPeerLost, P2PPeerConnected, P2PPeerDisconnected, P2PMessageReceived, P2PErrorEvent>
+  /**
+   * Wrapper struct for `std::variant<P2PPeerDiscovered, P2PPeerLost, P2PPeerConnected, P2PPeerDisconnected, P2PMessageReceived, P2PErrorEvent>`.
+   * std::variant cannot be used in Swift because of a Swift bug.
+   * Not even specializing it works. So we create a wrapper struct.
+   */
+  struct std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_ final {
+    std::variant<P2PPeerDiscovered, P2PPeerLost, P2PPeerConnected, P2PPeerDisconnected, P2PMessageReceived, P2PErrorEvent> variant;
+    std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(std::variant<P2PPeerDiscovered, P2PPeerLost, P2PPeerConnected, P2PPeerDisconnected, P2PMessageReceived, P2PErrorEvent> variant): variant(variant) { }
+    operator std::variant<P2PPeerDiscovered, P2PPeerLost, P2PPeerConnected, P2PPeerDisconnected, P2PMessageReceived, P2PErrorEvent>() const noexcept {
+      return variant;
+    }
+    inline size_t index() const noexcept {
+      return variant.index();
+    }
+    inline P2PPeerDiscovered get_0() const noexcept {
+      return std::get<0>(variant);
+    }
+    inline P2PPeerLost get_1() const noexcept {
+      return std::get<1>(variant);
+    }
+    inline P2PPeerConnected get_2() const noexcept {
+      return std::get<2>(variant);
+    }
+    inline P2PPeerDisconnected get_3() const noexcept {
+      return std::get<3>(variant);
+    }
+    inline P2PMessageReceived get_4() const noexcept {
+      return std::get<4>(variant);
+    }
+    inline P2PErrorEvent get_5() const noexcept {
+      return std::get<5>(variant);
+    }
+  };
+  inline std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_ create_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(const P2PPeerDiscovered& value) noexcept {
+    return std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(value);
+  }
+  inline std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_ create_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(const P2PPeerLost& value) noexcept {
+    return std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(value);
+  }
+  inline std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_ create_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(const P2PPeerConnected& value) noexcept {
+    return std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(value);
+  }
+  inline std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_ create_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(const P2PPeerDisconnected& value) noexcept {
+    return std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(value);
+  }
+  inline std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_ create_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(const P2PMessageReceived& value) noexcept {
+    return std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(value);
+  }
+  inline std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_ create_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(const P2PErrorEvent& value) noexcept {
+    return std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(value);
+  }
+  
+  // pragma MARK: std::function<void(const std::variant<P2PPeerDiscovered, P2PPeerLost, P2PPeerConnected, P2PPeerDisconnected, P2PMessageReceived, P2PErrorEvent>& /* event */)>
+  /**
+   * Specialized version of `std::function<void(const std::variant<P2PPeerDiscovered, P2PPeerLost, P2PPeerConnected, P2PPeerDisconnected, P2PMessageReceived, P2PErrorEvent>&)>`.
+   */
+  using Func_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_ = std::function<void(const std::variant<P2PPeerDiscovered, P2PPeerLost, P2PPeerConnected, P2PPeerDisconnected, P2PMessageReceived, P2PErrorEvent>& /* event */)>;
+  /**
+   * Wrapper class for a `std::function<void(const std::variant<P2PPeerDiscovered, P2PPeerLost, P2PPeerConnected, P2PPeerDisconnected, P2PMessageReceived, P2PErrorEvent>& / * event * /)>`, this can be used from Swift.
+   */
+  class Func_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent__Wrapper final {
+  public:
+    explicit Func_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent__Wrapper(std::function<void(const std::variant<P2PPeerDiscovered, P2PPeerLost, P2PPeerConnected, P2PPeerDisconnected, P2PMessageReceived, P2PErrorEvent>& /* event */)>&& func): _function(std::make_unique<std::function<void(const std::variant<P2PPeerDiscovered, P2PPeerLost, P2PPeerConnected, P2PPeerDisconnected, P2PMessageReceived, P2PErrorEvent>& /* event */)>>(std::move(func))) {}
+    inline void call(std::variant<P2PPeerDiscovered, P2PPeerLost, P2PPeerConnected, P2PPeerDisconnected, P2PMessageReceived, P2PErrorEvent> event) const noexcept {
+      _function->operator()(event);
+    }
+  private:
+    std::unique_ptr<std::function<void(const std::variant<P2PPeerDiscovered, P2PPeerLost, P2PPeerConnected, P2PPeerDisconnected, P2PMessageReceived, P2PErrorEvent>& /* event */)>> _function;
+  } SWIFT_NONCOPYABLE;
+  Func_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_ create_Func_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(void* NON_NULL swiftClosureWrapper) noexcept;
+  inline Func_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent__Wrapper wrap_Func_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(Func_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_ value) noexcept {
+    return Func_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent__Wrapper(std::move(value));
+  }
+  
   // pragma MARK: std::shared_ptr<HybridP2PSpec>
   /**
    * Specialized version of `std::shared_ptr<HybridP2PSpec>`.
@@ -87,6 +188,15 @@ namespace margelo::nitro::nitrop2p::bridge::swift {
   }
   inline Result_std__vector_P2PPeer__ create_Result_std__vector_P2PPeer__(const std::exception_ptr& error) noexcept {
     return Result<std::vector<P2PPeer>>::withError(error);
+  }
+  
+  // pragma MARK: Result<double>
+  using Result_double_ = Result<double>;
+  inline Result_double_ create_Result_double_(double value) noexcept {
+    return Result<double>::withValue(std::move(value));
+  }
+  inline Result_double_ create_Result_double_(const std::exception_ptr& error) noexcept {
+    return Result<double>::withError(error);
   }
 
 } // namespace margelo::nitro::nitrop2p::bridge::swift

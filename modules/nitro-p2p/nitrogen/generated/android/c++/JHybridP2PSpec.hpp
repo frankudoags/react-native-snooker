@@ -63,6 +63,8 @@ namespace margelo::nitro::nitrop2p {
     void broadcast(const std::string& data) override;
     std::vector<P2PPeer> getDiscoveredPeers() override;
     std::vector<P2PPeer> getConnectedPeers() override;
+    double subscribe(const std::function<void(const std::variant<P2PPeerDiscovered, P2PPeerLost, P2PPeerConnected, P2PPeerDisconnected, P2PMessageReceived, P2PErrorEvent>& /* event */)>& callback) override;
+    void unsubscribe(double id) override;
 
   private:
     jni::global_ref<JHybridP2PSpec::JavaPart> _javaPart;

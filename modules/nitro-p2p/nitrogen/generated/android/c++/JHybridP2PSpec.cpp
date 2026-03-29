@@ -9,12 +9,49 @@
 
 // Forward declaration of `P2PPeer` to properly resolve imports.
 namespace margelo::nitro::nitrop2p { struct P2PPeer; }
+// Forward declaration of `P2PPeerDiscovered` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PPeerDiscovered; }
+// Forward declaration of `P2PPeerLost` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PPeerLost; }
+// Forward declaration of `P2PPeerConnected` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PPeerConnected; }
+// Forward declaration of `P2PPeerDisconnected` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PPeerDisconnected; }
+// Forward declaration of `P2PMessageReceived` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PMessageReceived; }
+// Forward declaration of `P2PErrorEvent` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PErrorEvent; }
+// Forward declaration of `P2PEventType` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { enum class P2PEventType; }
+// Forward declaration of `P2PMessage` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PMessage; }
 
 #include "P2PPeer.hpp"
 #include <vector>
 #include "JP2PPeer.hpp"
 #include <string>
 #include <optional>
+#include "P2PPeerDiscovered.hpp"
+#include "P2PPeerLost.hpp"
+#include "P2PPeerConnected.hpp"
+#include "P2PPeerDisconnected.hpp"
+#include "P2PMessageReceived.hpp"
+#include "P2PErrorEvent.hpp"
+#include <variant>
+#include <functional>
+#include "JFunc_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_.hpp"
+#include <NitroModules/JNICallable.hpp>
+#include "JP2PEvent.hpp"
+#include "JP2PPeerDiscovered.hpp"
+#include "P2PEventType.hpp"
+#include "JP2PEventType.hpp"
+#include "JP2PPeerLost.hpp"
+#include "JP2PPeerConnected.hpp"
+#include "JP2PPeerDisconnected.hpp"
+#include "JP2PMessageReceived.hpp"
+#include "P2PMessage.hpp"
+#include "JP2PMessage.hpp"
+#include "JP2PErrorEvent.hpp"
 
 namespace margelo::nitro::nitrop2p {
 
@@ -104,6 +141,15 @@ namespace margelo::nitro::nitrop2p {
       }
       return __vector;
     }();
+  }
+  double JHybridP2PSpec::subscribe(const std::function<void(const std::variant<P2PPeerDiscovered, P2PPeerLost, P2PPeerConnected, P2PPeerDisconnected, P2PMessageReceived, P2PErrorEvent>& /* event */)>& callback) {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<double(jni::alias_ref<JFunc_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_::javaobject> /* callback */)>("subscribe_cxx");
+    auto __result = method(_javaPart, JFunc_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent__cxx::fromCpp(callback));
+    return __result;
+  }
+  void JHybridP2PSpec::unsubscribe(double id) {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<void(double /* id */)>("unsubscribe");
+    method(_javaPart, id);
   }
 
 } // namespace margelo::nitro::nitrop2p

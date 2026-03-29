@@ -23,6 +23,8 @@ namespace margelo::nitro::nitrop2p {
       prototype.registerHybridMethod("broadcast", &HybridP2PSpec::broadcast);
       prototype.registerHybridMethod("getDiscoveredPeers", &HybridP2PSpec::getDiscoveredPeers);
       prototype.registerHybridMethod("getConnectedPeers", &HybridP2PSpec::getConnectedPeers);
+      prototype.registerHybridMethod("subscribe", &HybridP2PSpec::subscribe);
+      prototype.registerHybridMethod("unsubscribe", &HybridP2PSpec::unsubscribe);
     });
   }
 

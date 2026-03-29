@@ -38,7 +38,7 @@
     "typescript": "^5.8.3"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpm lint-staged"
+    "pre-commit": "npm lint-staged"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [

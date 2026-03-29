@@ -243,4 +243,47 @@ open class HybridP2PSpec_cxx {
       return bridge.create_Result_std__vector_P2PPeer__(__exceptionPtr)
     }
   }
+  
+  @inline(__always)
+  public final func subscribe(callback: bridge.Func_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_) -> bridge.Result_double_ {
+    do {
+      let __result = try self.__implementation.subscribe(callback: { () -> (P2PEvent) -> Void in
+        let __wrappedFunction = bridge.wrap_Func_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(callback)
+        return { (__event: P2PEvent) -> Void in
+          __wrappedFunction.call({ () -> bridge.std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_ in
+            switch __event {
+              case .first(let __value):
+                return bridge.create_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(__value)
+              case .second(let __value):
+                return bridge.create_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(__value)
+              case .third(let __value):
+                return bridge.create_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(__value)
+              case .fourth(let __value):
+                return bridge.create_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(__value)
+              case .fifth(let __value):
+                return bridge.create_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(__value)
+              case .sixth(let __value):
+                return bridge.create_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(__value)
+            }
+          }())
+        }
+      }())
+      let __resultCpp = __result
+      return bridge.create_Result_double_(__resultCpp)
+    } catch (let __error) {
+      let __exceptionPtr = __error.toCpp()
+      return bridge.create_Result_double_(__exceptionPtr)
+    }
+  }
+  
+  @inline(__always)
+  public final func unsubscribe(id: Double) -> bridge.Result_void_ {
+    do {
+      try self.__implementation.unsubscribe(id: id)
+      return bridge.create_Result_void_()
+    } catch (let __error) {
+      let __exceptionPtr = __error.toCpp()
+      return bridge.create_Result_void_(__exceptionPtr)
+    }
+  }
 }

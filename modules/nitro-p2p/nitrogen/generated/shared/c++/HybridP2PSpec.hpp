@@ -15,11 +15,31 @@
 
 // Forward declaration of `P2PPeer` to properly resolve imports.
 namespace margelo::nitro::nitrop2p { struct P2PPeer; }
+// Forward declaration of `P2PPeerDiscovered` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PPeerDiscovered; }
+// Forward declaration of `P2PPeerLost` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PPeerLost; }
+// Forward declaration of `P2PPeerConnected` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PPeerConnected; }
+// Forward declaration of `P2PPeerDisconnected` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PPeerDisconnected; }
+// Forward declaration of `P2PMessageReceived` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PMessageReceived; }
+// Forward declaration of `P2PErrorEvent` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PErrorEvent; }
 
 #include <string>
 #include <optional>
 #include "P2PPeer.hpp"
 #include <vector>
+#include "P2PPeerDiscovered.hpp"
+#include "P2PPeerLost.hpp"
+#include "P2PPeerConnected.hpp"
+#include "P2PPeerDisconnected.hpp"
+#include "P2PMessageReceived.hpp"
+#include "P2PErrorEvent.hpp"
+#include <variant>
+#include <functional>
 
 namespace margelo::nitro::nitrop2p {
 
@@ -61,6 +81,8 @@ namespace margelo::nitro::nitrop2p {
       virtual void broadcast(const std::string& data) = 0;
       virtual std::vector<P2PPeer> getDiscoveredPeers() = 0;
       virtual std::vector<P2PPeer> getConnectedPeers() = 0;
+      virtual double subscribe(const std::function<void(const std::variant<P2PPeerDiscovered, P2PPeerLost, P2PPeerConnected, P2PPeerDisconnected, P2PMessageReceived, P2PErrorEvent>& /* event */)>& callback) = 0;
+      virtual void unsubscribe(double id) = 0;
 
     protected:
       // Hybrid Setup

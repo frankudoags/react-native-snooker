@@ -22,6 +22,8 @@ public protocol HybridP2PSpec_protocol: HybridObject {
   func broadcast(data: String) throws -> Void
   func getDiscoveredPeers() throws -> [P2PPeer]
   func getConnectedPeers() throws -> [P2PPeer]
+  func subscribe(callback: @escaping (_ event: P2PEvent) -> Void) throws -> Double
+  func unsubscribe(id: Double) throws -> Void
 }
 
 public extension HybridP2PSpec_protocol {

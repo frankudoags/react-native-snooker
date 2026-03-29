@@ -14,6 +14,14 @@
 
 namespace margelo::nitro::nitrop2p::bridge::swift {
 
+  // pragma MARK: std::function<void(const std::variant<P2PPeerDiscovered, P2PPeerLost, P2PPeerConnected, P2PPeerDisconnected, P2PMessageReceived, P2PErrorEvent>& /* event */)>
+  Func_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_ create_Func_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(void* NON_NULL swiftClosureWrapper) noexcept {
+    auto swiftClosure = NitroP2p::Func_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_::fromUnsafe(swiftClosureWrapper);
+    return [swiftClosure = std::move(swiftClosure)](const std::variant<P2PPeerDiscovered, P2PPeerLost, P2PPeerConnected, P2PPeerDisconnected, P2PMessageReceived, P2PErrorEvent>& event) mutable -> void {
+      swiftClosure.call(event);
+    };
+  }
+  
   // pragma MARK: std::shared_ptr<HybridP2PSpec>
   std::shared_ptr<HybridP2PSpec> create_std__shared_ptr_HybridP2PSpec_(void* NON_NULL swiftUnsafePointer) noexcept {
     NitroP2p::HybridP2PSpec_cxx swiftPart = NitroP2p::HybridP2PSpec_cxx::fromUnsafe(swiftUnsafePointer);

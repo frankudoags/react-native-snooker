@@ -63,6 +63,19 @@ abstract class HybridP2PSpec: HybridObject() {
   @DoNotStrip
   @Keep
   abstract fun getConnectedPeers(): Array<P2PPeer>
+  
+  abstract fun subscribe(callback: (event: P2PEvent) -> Unit): Double
+  
+  @DoNotStrip
+  @Keep
+  private fun subscribe_cxx(callback: Func_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_): Double {
+    val __result = subscribe(callback)
+    return __result
+  }
+  
+  @DoNotStrip
+  @Keep
+  abstract fun unsubscribe(id: Double): Unit
 
   // Default implementation of `HybridObject.toString()`
   override fun toString(): String {

@@ -10,17 +10,43 @@
 // Forward declarations of C++ defined types
 // Forward declaration of `HybridP2PSpec` to properly resolve imports.
 namespace margelo::nitro::nitrop2p { class HybridP2PSpec; }
+// Forward declaration of `P2PErrorEvent` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PErrorEvent; }
+// Forward declaration of `P2PEventType` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { enum class P2PEventType; }
+// Forward declaration of `P2PMessageReceived` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PMessageReceived; }
+// Forward declaration of `P2PMessage` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PMessage; }
+// Forward declaration of `P2PPeerConnected` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PPeerConnected; }
+// Forward declaration of `P2PPeerDisconnected` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PPeerDisconnected; }
+// Forward declaration of `P2PPeerDiscovered` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PPeerDiscovered; }
+// Forward declaration of `P2PPeerLost` to properly resolve imports.
+namespace margelo::nitro::nitrop2p { struct P2PPeerLost; }
 // Forward declaration of `P2PPeer` to properly resolve imports.
 namespace margelo::nitro::nitrop2p { struct P2PPeer; }
 
 // Include C++ defined types
 #include "HybridP2PSpec.hpp"
+#include "P2PErrorEvent.hpp"
+#include "P2PEventType.hpp"
+#include "P2PMessage.hpp"
+#include "P2PMessageReceived.hpp"
 #include "P2PPeer.hpp"
+#include "P2PPeerConnected.hpp"
+#include "P2PPeerDisconnected.hpp"
+#include "P2PPeerDiscovered.hpp"
+#include "P2PPeerLost.hpp"
 #include <NitroModules/Result.hpp>
 #include <exception>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <string>
+#include <variant>
 #include <vector>
 
 // C++ helpers for Swift
