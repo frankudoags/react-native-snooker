@@ -6,15 +6,15 @@
     "nitro",
     "react-native"
   ],
-  "homepage": "https://github.com/mrousavy/nitro#readme",
+  "homepage": "https://github.com/frankudoags/nitro-p2p#readme",
   "bugs": {
-    "url": "https://github.com/mrousavy/nitro/issues"
+    "url": "https://github.com/frankudoags/nitro-p2p/issues"
   },
   "license": "MIT",
-  "author": "Marc Rousavy <me@mrousavy.com> (https://github.com/mrousavy)",
+  "author": "Frank Udoags <frankudoags@gmail.com> (https://github.com/frankudoags)",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mrousavy/nitro.git"
+    "url": "git+https://github.com/frankudoags/nitro-p2p.git"
   },
   "source": "src/index",
   "files": [

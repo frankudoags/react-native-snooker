@@ -8,6 +8,17 @@
     "androidNamespace": ["nitrop2p"],
     "androidCxxLibName": "NitroP2p"
   },
-  "autolinking": {},
+  "autolinking": {
+        "P2p": {
+      "ios": {
+        "language": "swift",
+        "implementationClassName": "HybridP2p"
+      },
+      "android": {
+        "language": "kotlin",
+        "implementationClassName": "HybridP2p"
+      }
+    }
+  },
   "ignorePaths": ["**/node_modules"]
 }
