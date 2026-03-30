@@ -1,7 +1,12 @@
-import { useEffect, useState, useRef, useCallback } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import Animated, { makeMutable, useAnimatedStyle, useDerivedValue, useSharedValue } from 'react-native-reanimated'
+import { useEffect, useState, useRef, useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Animated, {
+  makeMutable,
+  useAnimatedStyle,
+  useDerivedValue,
+  useSharedValue,
+} from 'react-native-reanimated';
 import {
   initPhysics,
   stepPhysics,
@@ -14,37 +19,37 @@ import {
   TABLE_HEIGHT,
   type BallId,
   getInitialBallPositions,
-} from '../game/physics/index'
-import { PoolTable } from '../game/components/pool-table'
-import type { BallRenderItem, BallSharedState } from '../game/components/pool-table'
-import { Cue, SkiaCue } from '../game/components/cue'
-import { useGameStore } from '../game/store/game-store'
-import { useGameClient } from '../game/networking/game-client'
-import type { NetworkMessage } from '../game/networking/types'
+} from '../game/physics/index';
+import { PoolTable } from '../game/components/pool-table';
+import type { BallRenderItem, BallSharedState } from '../game/components/pool-table';
+import { Cue, SkiaCue } from '../game/components/cue';
+import { useGameStore } from '../game/store/game-store';
+import { useGameClient } from '../game/networking/game-client';
+import type { NetworkMessage } from '../game/networking/types';
 
 interface GameScreenProps {
-  onBack: () => void
+  onBack: () => void;
 }
 
 export function GameScreen({ onBack }: GameScreenProps) {
-  const [isTableMoving, setIsTableMoving] = useState(false)
-  const [tableLayout, setTableLayout] = useState({ width: 0, height: 0 })
-  const [showDebugPanel, setShowDebugPanel] = useState(false)
+  const [isTableMoving, setIsTableMoving] = useState(false);
+  const [tableLayout, setTableLayout] = useState({ width: 0, height: 0 });
+  const [showDebugPanel, setShowDebugPanel] = useState(false);
 
-  const cueVisibleSv = useSharedValue(true)
-  const cueIsAimingSv = useSharedValue(false)
-  const cueAngleSv = useSharedValue(-Math.PI / 2)
-  const cuePowerSv = useSharedValue(0)
+  const cueVisibleSv = useSharedValue(true);
+  const cueIsAimingSv = useSharedValue(false);
+  const cueAngleSv = useSharedValue(-Math.PI / 2);
+  const cuePowerSv = useSharedValue(0);
 
-  const initialPositions = getInitialBallPositions()
-  const ballStateRef = useRef<Record<BallId, BallSharedState> | null>(null)
-  const ballsRef = useRef<BallRenderItem[]>([])
+  const initialPositions = getInitialBallPositions();
+  const ballStateRef = useRef<Record<BallId, BallSharedState> | null>(null);
+  const ballsRef = useRef<BallRenderItem[]>([]);
 
   if (!ballStateRef.current) {
-    const sharedState = {} as Record<BallId, BallSharedState>
+    const sharedState = {} as Record<BallId, BallSharedState>;
 
     Object.entries(initialPositions).forEach(([id, ball]) => {
-      const ballId = id as BallId
+      const ballId = id as BallId;
       sharedState[ballId] = {
         x: makeMutable(ball.x),
         y: makeMutable(ball.y),
@@ -52,207 +57,227 @@ export function GameScreen({ onBack }: GameScreenProps) {
         vy: makeMutable(ball.vy),
         visible: makeMutable(!ball.pocketed),
         pocketedProgress: makeMutable(0),
-      }
-    })
+      };
+    });
 
-    ballStateRef.current = sharedState
+    ballStateRef.current = sharedState;
     ballsRef.current = (Object.keys(sharedState) as BallId[]).map((id) => ({
       id,
       state: sharedState[id],
-    }))
+    }));
   }
 
-  const ballState = ballStateRef.current
-  const balls = ballsRef.current
+  const ballState = ballStateRef.current;
+  const balls = ballsRef.current;
 
-  const animationFrame = useRef<number>(0)
-  const lastShotTime = useRef<number>(0)
-  const lastStoreSyncTime = useRef(0)
-  const turnRef = useRef<'player1' | 'player2'>('player1')
-  const gameOverRef = useRef(false)
-  const isTableMovingRef = useRef(false)
-  const pendingTurnSwitchRef = useRef<'player1' | 'player2' | null>(null)
-  const lastFrameTimeRef = useRef<number>(0)
+  const animationFrame = useRef<number>(0);
+  const lastShotTime = useRef<number>(0);
+  const lastStoreSyncTime = useRef(0);
+  const turnRef = useRef<'player1' | 'player2'>('player1');
+  const gameOverRef = useRef(false);
+  const isTableMovingRef = useRef(false);
+  const pendingTurnSwitchRef = useRef<'player1' | 'player2' | null>(null);
+  const lastFrameTimeRef = useRef<number>(0);
 
-  const cueBallX = useDerivedValue(() => ballState['cue-ball']?.x.value ?? TABLE_WIDTH / 2)
-  const cueBallY = useDerivedValue(() => ballState['cue-ball']?.y.value ?? TABLE_HEIGHT * 0.8)
+  const cueBallX = useDerivedValue(() => ballState['cue-ball']?.x.value ?? TABLE_WIDTH / 2);
+  const cueBallY = useDerivedValue(() => ballState['cue-ball']?.y.value ?? TABLE_HEIGHT * 0.8);
 
-  const turn = useGameStore((state) => state.turn)
-  const gameOver = useGameStore((state) => state.gameOver)
-  const winner = useGameStore((state) => state.winner)
-  const storeBallKinematics = useGameStore((state) => state.balls)
-  const updateBallPositions = useGameStore((state) => state.updateBallPositions)
-  const addMove = useGameStore((state) => state.addMove)
-  const setTurn = useGameStore((state) => state.setTurn)
-  const setGameOver = useGameStore((state) => state.setGameOver)
-  const resetGame = useGameStore((state) => state.resetGame)
-  const pendingNetworkMessages = useGameStore((state) => state.pendingNetworkMessages)
-  const dequeueNetworkMessage = useGameStore((state) => state.dequeueNetworkMessage)
+  const turn = useGameStore((state) => state.turn);
+  const gameOver = useGameStore((state) => state.gameOver);
+  const winner = useGameStore((state) => state.winner);
+  const storeBallKinematics = useGameStore((state) => state.balls);
+  const updateBallPositions = useGameStore((state) => state.updateBallPositions);
+  const addMove = useGameStore((state) => state.addMove);
+  const setTurn = useGameStore((state) => state.setTurn);
+  const setGameOver = useGameStore((state) => state.setGameOver);
+  const resetGame = useGameStore((state) => state.resetGame);
+  const pendingNetworkMessages = useGameStore((state) => state.pendingNetworkMessages);
+  const dequeueNetworkMessage = useGameStore((state) => state.dequeueNetworkMessage);
 
-  const { broadcastMessage } = useGameClient()
-
-  useEffect(() => {
-    turnRef.current = turn
-  }, [turn])
+  const { broadcastMessage } = useGameClient();
 
   useEffect(() => {
-    gameOverRef.current = gameOver
-  }, [gameOver])
+    turnRef.current = turn;
+  }, [turn]);
+
+  useEffect(() => {
+    gameOverRef.current = gameOver;
+  }, [gameOver]);
 
   const getPocketedBallIds = () => {
     return balls
       .filter((ball) => ball.id !== 'cue-ball' && !ball.state.visible.value)
-      .map((ball) => ball.id)
-  }
+      .map((ball) => ball.id);
+  };
 
   const runGameLoopFrame = useCallback(() => {
-    const frameNow = typeof performance !== 'undefined' ? performance.now() : Date.now()
-    const frameDeltaMs = Math.min(34, Math.max(8, frameNow - (lastFrameTimeRef.current || frameNow)))
-    lastFrameTimeRef.current = frameNow
+    const frameNow = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    const frameDeltaMs = Math.min(
+      34,
+      Math.max(8, frameNow - (lastFrameTimeRef.current || frameNow))
+    );
+    lastFrameTimeRef.current = frameNow;
 
-    const positions = stepPhysics()
+    const positions = stepPhysics();
 
     balls.forEach((ball) => {
-      const next = positions[ball.id]
-      if (!next) return
-      ball.state.x.value = next.x
-      ball.state.y.value = next.y
-      ball.state.vx.value = next.vx
-      ball.state.vy.value = next.vy
-      ball.state.visible.value = next.visible
+      const next = positions[ball.id];
+      if (!next) return;
+      ball.state.x.value = next.x;
+      ball.state.y.value = next.y;
+      ball.state.vx.value = next.vx;
+      ball.state.vy.value = next.vy;
+      ball.state.visible.value = next.visible;
       if (next.visible) {
-        ball.state.pocketedProgress.value = 0
+        ball.state.pocketedProgress.value = 0;
       } else {
-        const nextProgress = ball.state.pocketedProgress.value + frameDeltaMs / 240
-        ball.state.pocketedProgress.value = Math.min(1, nextProgress)
+        const nextProgress = ball.state.pocketedProgress.value + frameDeltaMs / 240;
+        ball.state.pocketedProgress.value = Math.min(1, nextProgress);
       }
-    })
+    });
 
-    const now = Date.now()
+    const now = Date.now();
     if (now - lastStoreSyncTime.current > 120) {
-      updateBallPositions(positions)
-      lastStoreSyncTime.current = now
+      updateBallPositions(positions);
+      lastStoreSyncTime.current = now;
     }
 
     if (checkCueBallPocketed(positions)) {
-      resetCueBall()
+      resetCueBall();
     }
 
-    const moving = isBallsMoving()
+    const moving = isBallsMoving();
 
     if (moving !== isTableMovingRef.current) {
-      isTableMovingRef.current = moving
-      setIsTableMoving(moving)
+      isTableMovingRef.current = moving;
+      setIsTableMoving(moving);
     }
 
     if (!moving && pendingTurnSwitchRef.current) {
-      const nextTurn = pendingTurnSwitchRef.current
-      pendingTurnSwitchRef.current = null
-      turnRef.current = nextTurn
-      setTurn(nextTurn)
+      const nextTurn = pendingTurnSwitchRef.current;
+      pendingTurnSwitchRef.current = null;
+      turnRef.current = nextTurn;
+      setTurn(nextTurn);
     }
 
     if (!moving && positions['8']?.visible === false && !gameOverRef.current) {
-      const currentWinner = turnRef.current === 'player1' ? 'player2' : 'player1'
-      gameOverRef.current = true
-      setGameOver(currentWinner)
+      const currentWinner = turnRef.current === 'player1' ? 'player2' : 'player1';
+      gameOverRef.current = true;
+      setGameOver(currentWinner);
 
       broadcastMessage({
         type: 'GAME_OVER',
         winner: currentWinner,
-      })
+      });
     }
 
-    animationFrame.current = requestAnimationFrame(runGameLoopFrame)
-  }, [balls, broadcastMessage, setGameOver, setTurn, updateBallPositions])
+    animationFrame.current = requestAnimationFrame(runGameLoopFrame);
+  }, [balls, broadcastMessage, setGameOver, setTurn, updateBallPositions]);
 
   useEffect(() => {
     async function init() {
-      await initPhysics()
-      animationFrame.current = requestAnimationFrame(runGameLoopFrame)
+      await initPhysics();
+      animationFrame.current = requestAnimationFrame(runGameLoopFrame);
     }
-    init()
+    init();
 
     return () => {
-      cancelAnimationFrame(animationFrame.current)
-    }
-  }, [runGameLoopFrame])
+      cancelAnimationFrame(animationFrame.current);
+    };
+  }, [runGameLoopFrame]);
 
-  const cueBallVisible = ballState['cue-ball']?.visible.value ?? true
-  const canLocalPlayerShoot = !gameOver && !isTableMoving && cueBallVisible
-  const tableWidth = tableLayout.width
-  const tableHeight = tableLayout.height
-  const tableScale = tableWidth > 0 && tableHeight > 0
-    ? Math.min(tableWidth / TABLE_WIDTH, tableHeight / TABLE_HEIGHT, 1)
-    : 1
-  const tableOffsetX = tableWidth > 0 ? (tableWidth - TABLE_WIDTH * tableScale) / 2 : 0
-  const tableOffsetY = tableHeight > 0 ? (tableHeight - TABLE_HEIGHT * tableScale) / 2 : 0
+  const cueBallVisible = ballState['cue-ball']?.visible.value ?? true;
+  const canLocalPlayerShoot = !gameOver && !isTableMoving && cueBallVisible;
+  const tableWidth = tableLayout.width;
+  const tableHeight = tableLayout.height;
+  const tableScale =
+    tableWidth > 0 && tableHeight > 0
+      ? Math.min(tableWidth / TABLE_WIDTH, tableHeight / TABLE_HEIGHT, 1)
+      : 1;
+  const tableOffsetX = tableWidth > 0 ? (tableWidth - TABLE_WIDTH * tableScale) / 2 : 0;
+  const tableOffsetY = tableHeight > 0 ? (tableHeight - TABLE_HEIGHT * tableScale) / 2 : 0;
 
   const debugBallOrder: BallId[] = [
     'cue-ball',
-    '1', '2', '3', '4', '5', '6', '7', '8',
-    '9', '10', '11', '12', '13', '14', '15',
-  ]
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    '11',
+    '12',
+    '13',
+    '14',
+    '15',
+  ];
 
   const debugRows = showDebugPanel
     ? debugBallOrder.map((id) => {
-      const shared = ballState[id]
-      const fromStore = storeBallKinematics[id]
+        const shared = ballState[id];
+        const fromStore = storeBallKinematics[id];
 
-      const x = fromStore?.x ?? shared?.x.value ?? 0
-      const y = fromStore?.y ?? shared?.y.value ?? 0
-      const vx = fromStore?.vx ?? shared?.vx.value ?? 0
-      const vy = fromStore?.vy ?? shared?.vy.value ?? 0
-      const visible = fromStore?.visible ?? shared?.visible.value ?? false
-      const speed = Math.sqrt(vx * vx + vy * vy)
+        const x = fromStore?.x ?? shared?.x.value ?? 0;
+        const y = fromStore?.y ?? shared?.y.value ?? 0;
+        const vx = fromStore?.vx ?? shared?.vx.value ?? 0;
+        const vy = fromStore?.vy ?? shared?.vy.value ?? 0;
+        const visible = fromStore?.visible ?? shared?.visible.value ?? false;
+        const speed = Math.sqrt(vx * vx + vy * vy);
 
-      return { id, x, y, vx, vy, speed, visible }
-    })
-    : []
+        return { id, x, y, vx, vy, speed, visible };
+      })
+    : [];
 
-  const handleNetworkMessage = useCallback((message: NetworkMessage) => {
-    switch (message.type) {
-      case 'SHOT':
-        shoot(message.angle, message.power)
-        addMove({
-          playerId: message.playerId === 'player2' ? 'player2' : 'player1',
-          angle: message.angle,
-          power: message.power,
-          pocketedBalls: [],
-          cueBallPocketed: false,
-        })
-        setTurn(message.playerId === 'player2' ? 'player1' : 'player2')
-        break
-      case 'GAME_STATE':
-        break
-      case 'GAME_OVER':
-        setGameOver(message.winner === 'player1' ? 'player1' : 'player2')
-        break
-    }
-  }, [addMove, setGameOver, setTurn])
+  const handleNetworkMessage = useCallback(
+    (message: NetworkMessage) => {
+      switch (message.type) {
+        case 'SHOT':
+          shoot(message.angle, message.power);
+          addMove({
+            playerId: message.playerId === 'player2' ? 'player2' : 'player1',
+            angle: message.angle,
+            power: message.power,
+            pocketedBalls: [],
+            cueBallPocketed: false,
+          });
+          setTurn(message.playerId === 'player2' ? 'player1' : 'player2');
+          break;
+        case 'GAME_STATE':
+          break;
+        case 'GAME_OVER':
+          setGameOver(message.winner === 'player1' ? 'player1' : 'player2');
+          break;
+      }
+    },
+    [addMove, setGameOver, setTurn]
+  );
 
   useEffect(() => {
-    if (pendingNetworkMessages.length === 0) return
-    const envelope = dequeueNetworkMessage()
-    if (!envelope) return
-    handleNetworkMessage(envelope.message)
-  }, [dequeueNetworkMessage, handleNetworkMessage, pendingNetworkMessages.length])
+    if (pendingNetworkMessages.length === 0) return;
+    const envelope = dequeueNetworkMessage();
+    if (!envelope) return;
+    handleNetworkMessage(envelope.message);
+  }, [dequeueNetworkMessage, handleNetworkMessage, pendingNetworkMessages.length]);
 
   const handleShot = (angle: number, power: number) => {
-    const now = Date.now()
-    if (now - lastShotTime.current < 500) return
-    lastShotTime.current = now
+    const now = Date.now();
+    if (now - lastShotTime.current < 500) return;
+    lastShotTime.current = now;
 
-    const localCanShoot = !gameOverRef.current && !isTableMovingRef.current && cueBallVisible
+    const localCanShoot = !gameOverRef.current && !isTableMovingRef.current && cueBallVisible;
     if (!localCanShoot) {
-      return
+      return;
     }
 
-    shoot(angle, power)
-    cueVisibleSv.value = false
-    cueIsAimingSv.value = false
-    cuePowerSv.value = 0
-    pendingTurnSwitchRef.current = turnRef.current === 'player1' ? 'player2' : 'player1'
+    shoot(angle, power);
+    cueVisibleSv.value = false;
+    cueIsAimingSv.value = false;
+    cuePowerSv.value = 0;
+    pendingTurnSwitchRef.current = turnRef.current === 'player1' ? 'player2' : 'player1';
 
     addMove({
       playerId: turnRef.current,
@@ -260,55 +285,55 @@ export function GameScreen({ onBack }: GameScreenProps) {
       power,
       pocketedBalls: getPocketedBallIds(),
       cueBallPocketed: false,
-    })
+    });
 
     broadcastMessage({
       type: 'SHOT',
       angle,
       power,
       playerId: turnRef.current,
-    })
-  }
+    });
+  };
 
   const handleReset = () => {
-    resetPhysics()
-    resetGame()
-    gameOverRef.current = false
-    turnRef.current = 'player1'
-    setTurn('player1')
-    cueVisibleSv.value = false
-    cueIsAimingSv.value = false
-    cuePowerSv.value = 0
-    pendingTurnSwitchRef.current = null
-    setIsTableMoving(false)
-    isTableMovingRef.current = false
+    resetPhysics();
+    resetGame();
+    gameOverRef.current = false;
+    turnRef.current = 'player1';
+    setTurn('player1');
+    cueVisibleSv.value = false;
+    cueIsAimingSv.value = false;
+    cuePowerSv.value = 0;
+    pendingTurnSwitchRef.current = null;
+    setIsTableMoving(false);
+    isTableMovingRef.current = false;
 
-    const positions = stepPhysics()
+    const positions = stepPhysics();
     balls.forEach((ball) => {
-      const next = positions[ball.id]
-      if (!next) return
-      ball.state.x.value = next.x
-      ball.state.y.value = next.y
-      ball.state.vx.value = next.vx
-      ball.state.vy.value = next.vy
-      ball.state.visible.value = next.visible
-    })
-    updateBallPositions(positions)
-  }
+      const next = positions[ball.id];
+      if (!next) return;
+      ball.state.x.value = next.x;
+      ball.state.y.value = next.y;
+      ball.state.vx.value = next.vx;
+      ball.state.vy.value = next.vy;
+      ball.state.visible.value = next.visible;
+    });
+    updateBallPositions(positions);
+  };
 
   const powerHudStyle = useAnimatedStyle(() => {
-    const active = cueIsAimingSv.value && canLocalPlayerShoot
+    const active = cueIsAimingSv.value && canLocalPlayerShoot;
     return {
       opacity: active ? 1 : 0,
-    }
-  })
+    };
+  });
 
   const powerFillStyle = useAnimatedStyle(() => {
-    const ratio = Math.min(Math.max(cuePowerSv.value / 120, 0), 1)
+    const ratio = Math.min(Math.max(cuePowerSv.value / 120, 0), 1);
     return {
       width: `${Math.round(ratio * 100)}%`,
-    }
-  })
+    };
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -318,16 +343,21 @@ export function GameScreen({ onBack }: GameScreenProps) {
         </TouchableOpacity>
         <View style={styles.turnIndicator}>
           <Text style={styles.turnText}>
-            {gameOver ? (
-              winner === 'player1' ? 'Player 1 Wins!' : 'Player 2 Wins!'
-            ) : (
-              `${turn === 'player1' ? 'Player 1' : 'Player 2'}'s Turn`
-            )}
+            {gameOver
+              ? winner === 'player1'
+                ? 'Player 1 Wins!'
+                : 'Player 2 Wins!'
+              : `${turn === 'player1' ? 'Player 1' : 'Player 2'}'s Turn`}
           </Text>
         </View>
         <View style={styles.headerActions}>
-          <TouchableOpacity onPress={() => setShowDebugPanel((value) => !value)} style={styles.debugToggleButton}>
-            <Text style={styles.debugToggleText}>{showDebugPanel ? 'Hide Debug' : 'Show Debug'}</Text>
+          <TouchableOpacity
+            onPress={() => setShowDebugPanel((value) => !value)}
+            style={styles.debugToggleButton}
+          >
+            <Text style={styles.debugToggleText}>
+              {showDebugPanel ? 'Hide Debug' : 'Show Debug'}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleReset} style={styles.resetButton}>
             <Text style={styles.resetButtonText}>Reset</Text>
@@ -339,8 +369,8 @@ export function GameScreen({ onBack }: GameScreenProps) {
         <View
           style={StyleSheet.absoluteFill}
           onLayout={(event) => {
-            const { width, height } = event.nativeEvent.layout
-            setTableLayout({ width, height })
+            const { width, height } = event.nativeEvent.layout;
+            setTableLayout({ width, height });
           }}
         />
 
@@ -391,12 +421,15 @@ export function GameScreen({ onBack }: GameScreenProps) {
         {showDebugPanel && (
           <View style={styles.debugPanel} pointerEvents="none">
             <Text style={styles.debugTitle}>Ball Debug</Text>
-            <ScrollView style={styles.debugScroll} contentContainerStyle={styles.debugScrollContent}>
+            <ScrollView
+              style={styles.debugScroll}
+              contentContainerStyle={styles.debugScrollContent}
+            >
               {debugRows.map((row) => (
                 <Text key={`debug-${row.id}`} style={styles.debugLine}>
-                  {`${row.id.padEnd(8, ' ')} x:${row.x.toFixed(1).padStart(6, ' ')} y:${row.y.toFixed(1).padStart(6, ' ')} `
-                  + `vx:${row.vx.toFixed(2).padStart(6, ' ')} vy:${row.vy.toFixed(2).padStart(6, ' ')} `
-                  + `s:${row.speed.toFixed(2).padStart(6, ' ')} ${row.visible ? 'on' : 'off'}`}
+                  {`${row.id.padEnd(8, ' ')} x:${row.x.toFixed(1).padStart(6, ' ')} y:${row.y.toFixed(1).padStart(6, ' ')} ` +
+                    `vx:${row.vx.toFixed(2).padStart(6, ' ')} vy:${row.vy.toFixed(2).padStart(6, ' ')} ` +
+                    `s:${row.speed.toFixed(2).padStart(6, ' ')} ${row.visible ? 'on' : 'off'}`}
                 </Text>
               ))}
             </ScrollView>
@@ -415,7 +448,7 @@ export function GameScreen({ onBack }: GameScreenProps) {
         </View>
       )}
     </SafeAreaView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -559,4 +592,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-})
+});

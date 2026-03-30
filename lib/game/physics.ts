@@ -1,1 +1,1 @@
-export * from './physics/index'
+export * from './physics/index';

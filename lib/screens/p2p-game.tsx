@@ -1,9 +1,9 @@
-import { GameScreen } from './game'
+import { GameScreen } from './game';
 
 interface P2PGameScreenProps {
-  onBack: () => void
+  onBack: () => void;
 }
 
 export function P2PGameScreen({ onBack }: P2PGameScreenProps) {
-  return <GameScreen onBack={onBack} />
+  return <GameScreen onBack={onBack} />;
 }

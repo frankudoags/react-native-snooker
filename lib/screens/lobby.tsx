@@ -1,20 +1,27 @@
-import React from 'react'
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import type { P2PPeer } from '../../modules/nitro-p2p/src/index'
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import type { P2PPeer } from '../../modules/nitro-p2p/src/index';
 
 // ─── Props ───────────────────────────────────────────────────────────────────
 
 interface LobbyProps {
-  playerName: string
-  peers: P2PPeer[]
-  connectedPeers: P2PPeer[]
-  onConnect: (peerId: string) => void
-  onStartDiscovery: () => void
-  onStopDiscovery: () => void
-  isDiscovering: boolean
-  onHostGame: () => void
-  onPlayBot: () => void
+  playerName: string;
+  peers: P2PPeer[];
+  connectedPeers: P2PPeer[];
+  onConnect: (peerId: string) => void;
+  onStartDiscovery: () => void;
+  onStopDiscovery: () => void;
+  isDiscovering: boolean;
+  onHostGame: () => void;
+  onPlayBot: () => void;
 }
 
 // ─── Lobby Screen ─────────────────────────────────────────────────────────────
@@ -31,8 +38,8 @@ export function Lobby({
   onPlayBot,
 }: LobbyProps) {
   const isPeerConnected = (peerId: string) => {
-    return connectedPeers.some((peer) => peer.id === peerId)
-  }
+    return connectedPeers.some((peer) => peer.id === peerId);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -53,9 +60,7 @@ export function Lobby({
             style={[styles.discoveryButton, isDiscovering && styles.discoveryButtonActive]}
             onPress={isDiscovering ? onStopDiscovery : onStartDiscovery}
           >
-            <Text style={styles.discoveryButtonText}>
-              {isDiscovering ? 'Stop' : 'Start'}
-            </Text>
+            <Text style={styles.discoveryButtonText}>{isDiscovering ? 'Stop' : 'Start'}</Text>
           </TouchableOpacity>
         </View>
 
@@ -73,7 +78,7 @@ export function Lobby({
             </Text>
           ) : (
             peers.map((peer) => {
-              const connected = isPeerConnected(peer.id)
+              const connected = isPeerConnected(peer.id);
               return (
                 <View key={peer.id} style={styles.peerItem}>
                   <View style={styles.peerInfo}>
@@ -93,7 +98,7 @@ export function Lobby({
                     </Text>
                   </TouchableOpacity>
                 </View>
-              )
+              );
             })
           )}
         </ScrollView>
@@ -111,7 +116,7 @@ export function Lobby({
         )}
       </View>
     </SafeAreaView>
-  )
+  );
 }
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
@@ -275,4 +280,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-})
+});
