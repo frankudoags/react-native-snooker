@@ -17,7 +17,6 @@
 
 #include "JHybridP2PSpec.hpp"
 #include "JFunc_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_.hpp"
-#include "JHybridP2pSpec.hpp"
 #include <NitroModules/DefaultConstructableObject.hpp>
 
 namespace margelo::nitro::nitrop2p {
@@ -28,12 +27,12 @@ int initialize(JavaVM* vm) {
   });
 }
 
-struct JHybridP2pSpecImpl: public jni::JavaClass<JHybridP2pSpecImpl, JHybridP2pSpec::JavaPart> {
-  static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/nitrop2p/HybridP2p;";
-  static std::shared_ptr<JHybridP2pSpec> create() {
-    static const auto constructorFn = javaClassStatic()->getConstructor<JHybridP2pSpecImpl::javaobject()>();
-    jni::local_ref<JHybridP2pSpec::JavaPart> javaPart = javaClassStatic()->newObject(constructorFn);
-    return javaPart->getJHybridP2pSpec();
+struct JHybridP2PSpecImpl: public jni::JavaClass<JHybridP2PSpecImpl, JHybridP2PSpec::JavaPart> {
+  static constexpr auto kJavaDescriptor = "Lcom/margelo/nitro/nitrop2p/HybridP2P;";
+  static std::shared_ptr<JHybridP2PSpec> create() {
+    static const auto constructorFn = javaClassStatic()->getConstructor<JHybridP2PSpecImpl::javaobject()>();
+    jni::local_ref<JHybridP2PSpec::JavaPart> javaPart = javaClassStatic()->newObject(constructorFn);
+    return javaPart->getJHybridP2PSpec();
   }
 };
 
@@ -47,9 +46,9 @@ void registerAllNatives() {
 
   // Register Nitro Hybrid Objects
   HybridObjectRegistry::registerHybridObjectConstructor(
-    "P2p",
+    "P2P",
     []() -> std::shared_ptr<HybridObject> {
-      return JHybridP2pSpecImpl::create();
+      return JHybridP2PSpecImpl::create();
     }
   );
 }

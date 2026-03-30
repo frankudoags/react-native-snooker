@@ -10,7 +10,7 @@
 #import "NitroP2p-Swift-Cxx-Umbrella.hpp"
 #import <type_traits>
 
-#include "HybridP2pSpecSwift.hpp"
+#include "HybridP2PSpecSwift.hpp"
 
 @interface NitroP2pAutolinking : NSObject
 @end
@@ -22,9 +22,9 @@
   using namespace margelo::nitro::nitrop2p;
 
   HybridObjectRegistry::registerHybridObjectConstructor(
-    "P2p",
+    "P2P",
     []() -> std::shared_ptr<HybridObject> {
-      std::shared_ptr<HybridP2pSpec> hybridObject = NitroP2p::NitroP2pAutolinking::createP2p();
+      std::shared_ptr<HybridP2PSpec> hybridObject = NitroP2p::NitroP2pAutolinking::createP2P();
       return hybridObject;
     }
   );

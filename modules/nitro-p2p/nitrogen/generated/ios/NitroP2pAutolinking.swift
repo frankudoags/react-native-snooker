@@ -12,15 +12,15 @@ import NitroModules
 public final class NitroP2pAutolinking {
   public typealias bridge = margelo.nitro.nitrop2p.bridge.swift
 
-  public static func createP2p() -> bridge.std__shared_ptr_HybridP2pSpec_ {
-    let hybridObject = HybridP2p()
-    return { () -> bridge.std__shared_ptr_HybridP2pSpec_ in
+  public static func createP2P() -> bridge.std__shared_ptr_HybridP2PSpec_ {
+    let hybridObject = HybridP2P()
+    return { () -> bridge.std__shared_ptr_HybridP2PSpec_ in
       let __cxxWrapped = hybridObject.getCxxWrapper()
       return __cxxWrapped.getCxxPart()
     }()
   }
   
-  public static func isP2pRecyclable() -> Bool {
-    return HybridP2p.self is any RecyclableView.Type
+  public static func isP2PRecyclable() -> Bool {
+    return HybridP2P.self is any RecyclableView.Type
   }
 }

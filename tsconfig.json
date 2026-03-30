@@ -4,7 +4,9 @@
     "module": "ESNext",
     "jsx": "react-jsx",
     "strict": true,
-    "paths": {},
+    "paths": {
+      "nitro-p2p": ["./module/src/index"]
+    },
     "moduleResolution": "bundler",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,

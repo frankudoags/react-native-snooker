@@ -250,7 +250,7 @@ open class HybridP2PSpec_cxx {
       let __result = try self.__implementation.subscribe(callback: { () -> (P2PEvent) -> Void in
         let __wrappedFunction = bridge.wrap_Func_void_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(callback)
         return { (__event: P2PEvent) -> Void in
-          __wrappedFunction.call({ () -> bridge.std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_ in
+          let __eventCpp = { () -> bridge.std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_ in
             switch __event {
               case .first(let __value):
                 return bridge.create_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(__value)
@@ -265,7 +265,8 @@ open class HybridP2PSpec_cxx {
               case .sixth(let __value):
                 return bridge.create_std__variant_P2PPeerDiscovered__P2PPeerLost__P2PPeerConnected__P2PPeerDisconnected__P2PMessageReceived__P2PErrorEvent_(__value)
             }
-          }())
+          }()
+          __wrappedFunction.call(__eventCpp.variant)
         }
       }())
       let __resultCpp = __result

@@ -16,7 +16,7 @@ private let kBeaconPort: UInt16 = 45679
 private let kBeaconInterval: TimeInterval = 1.5
 private let kBeaconTTL:      TimeInterval = 6.0
 
-class HybridP2p: HybridP2PSpec {
+class HybridP2P: HybridP2PSpec {
     // ─── Identity ─────────────────────────────────────────────────────────────
     private var deviceId   = UUID().uuidString
     private var deviceName = UIDevice.current.name

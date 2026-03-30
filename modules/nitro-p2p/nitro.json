@@ -9,14 +9,14 @@
     "androidCxxLibName": "NitroP2p"
   },
   "autolinking": {
-        "P2p": {
+    "P2P": {
       "ios": {
         "language": "swift",
-        "implementationClassName": "HybridP2p"
+        "implementationClassName": "HybridP2P"
       },
       "android": {
         "language": "kotlin",
-        "implementationClassName": "HybridP2p"
+        "implementationClassName": "HybridP2P"
       }
     }
   },
